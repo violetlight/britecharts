@@ -1,6 +1,7 @@
 define(function(require){
     'use strict';
 
+    const d3Dispatch = require('d3-dispatch');    
     const d3Format = require('d3-format');
     const d3Scale = require('d3-scale');
     const d3Selection = require('d3-selection');
@@ -99,7 +100,10 @@ define(function(require){
             entries,
             chartWidth, chartHeight,
             data,
-            svg;
+            svg,
+            
+            // events
+            dispatcher = d3Dispatch.dispatch('customClick');
 
 
         /**
@@ -214,6 +218,24 @@ define(function(require){
         }
 
         /**
+         * Handles a legend click
+         * @return {void}
+         * @private
+         */
+        function handleClick(el, d, chartWidth, chartHeight) {
+            console.log('clicked')
+            dispatcher.call('customClick', el, d, d3Selection.mouse(el), [chartWidth, chartHeight]);
+
+            toggleLine(d.id);
+            d3Selection.sele
+            // if (highlightedSlice && el !== highlightedSlice) {
+                // console.log('highlightedSlice crossed', );
+                // tweenGrowth(highlightedSlice, externalRadius - radiusHoverOffset);
+            // }
+            // tweenGrowth(el, externalRadius);
+        }
+
+        /**
          * Draws the entries of the legend within a single line
          * @private
          */
@@ -256,7 +278,10 @@ define(function(require){
 
             svg.select('.legend-group')
                 .selectAll('g.legend-entry')
-              .append('text')
+            .append('text')
+                .on('click', function(d) {
+                    handleClick(this, d);
+                })
                 .classed('legend-entry-name', true)
                 .text(getName)
                 .attr('x', getLineElementMargin())
@@ -310,6 +335,9 @@ define(function(require){
                 .selectAll('g.legend-line')
                 .selectAll('g.legend-entry')
               .append('text')
+                .on('click', function(d) {
+                    handleClick(this, d);
+                })
                 .classed('legend-entry-name', true)
                 .text(getName)
                 .attr('x', getLineElementMargin())
@@ -351,6 +379,24 @@ define(function(require){
 
             svg.select(`[data-item="${exceptionItemId}"]`)
                 .classed(isFadedClassName, false);
+        }
+
+        /**
+         * Applies the dim class the line that has the given id
+         * @param  {number} labelToDimId Id of the line that needs to stay the same
+         * @private
+         */
+        function toggleLine(labelToDimId) {
+            let classToFade = 'g.legend-entry';
+
+            console.log('shouldDim this label', labelToDimId);
+
+            // svg.select('.legend-group')
+            //     .selectAll(classToFade)
+            //     .classed(isFadedClassName, true);
+
+            svg.select(`[data-item="${labelToDimId}"]`)
+                .classed(isFadedClassName, true);
         }
 
         /**
@@ -430,6 +476,16 @@ define(function(require){
             cleanFadedLines();
             fadeLinesBut(entryId);
         };
+
+        /**
+         * Dims a line entry by fading the clicked label
+         * @param  {number} entryId ID of the entry line
+         * @public
+         */
+        exports.dimLabel = function(entryId) {
+            cleanFadedLines();
+            toggleLine(entryId);
+        }
 
         /**
          * Gets or Sets the horizontal mode on the legend
@@ -524,6 +580,12 @@ define(function(require){
 
             return this;
         };
+
+        exports.on = function() {
+            let value = dispatcher.on.apply(dispatcher, arguments);
+            
+            return value === dispatcher ? exports : value;
+        }
 
         return exports;
     };
