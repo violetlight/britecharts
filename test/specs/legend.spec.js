@@ -112,6 +112,25 @@ define(['d3', 'legend', 'donutChartDataBuilder'], function(d3, legend, dataBuild
                 });
             });
 
+            describe('when legend is clicked', () => {
+                it('should trigger customClick event', () => {
+                    let callback = jasmine.createSpy('clickCallback');
+                    let texts = containerFixture
+                            .select('.britechart-legend')
+                            .selectAll('.legend-entry-value text');
+                    
+                    legendChart.on('customClick', callback);
+
+                    console.log('The data should be:', texts.data[0]);
+                    texts.data.each(function(d, index) {
+                        console.log('d, index', d, index);
+                    });
+                    
+                    expect(callback.calls.count()).toBe(1);
+                    // expect(callback.calls.allArgs()[0].length).toBe(3);
+                });
+            });
+
             describe('API', function() {
 
                 it('should provide margin getter and setter', () =>{

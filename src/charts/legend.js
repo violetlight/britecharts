@@ -86,7 +86,7 @@ define(function(require){
             numberFormat = 's',
 
             isFadedClassName = 'is-faded',
-            isToggledClassName = 'is-faded',
+            isToggledClassName = 'is-toggled',
             isHorizontal = false,
 
             // colors

@@ -66,6 +66,19 @@
 .britechart-legend .legend-entry.is-faded .legend-circle {
   opacity: 0.2; }
 
+.britechart-legend .legend-entry.is-toggled .legend-entry-name,
+.britechart-legend .legend-entry.is-toggled .legend-entry-value,
+.britechart-legend .legend-entry.is-toggled .legend-circle {
+  opacity: 0.97;
+  transition: opacity .2s ease-out;
+  -moz-transition: opacity .2s ease-out;
+  -webkit-transition: opacity .2s ease-out; }
+
+.britechart-legend .legend-entry.is-toggled .legend-entry-name,
+.britechart-legend .legend-entry.is-toggled .legend-entry-value,
+.britechart-legend .legend-entry.is-toggled .legend-circle {
+  opacity: 0.2; }
+
 .bar-chart .bar {
   shape-rendering: crispEdges; }
 

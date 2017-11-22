@@ -191,6 +191,7 @@
         <pre class=""><code class="language-javascript">define(function(require){
     'use strict';
 
+    const d3Dispatch = require('d3-dispatch');    
     const d3Format = require('d3-format');
     const d3Scale = require('d3-scale');
     const d3Selection = require('d3-selection');
@@ -275,6 +276,7 @@
             numberFormat = 's',
 
             isFadedClassName = 'is-faded',
+            isToggledClassName = 'is-toggled',
             isHorizontal = false,
 
             // colors
@@ -289,7 +291,10 @@
             entries,
             chartWidth, chartHeight,
             data,
-            svg;
+            svg,
+            
+            // events
+            dispatcher = d3Dispatch.dispatch('customClick');
 
 
         /**
@@ -404,6 +409,17 @@
         }
 
         /**
+         * Handles a legend click
+         * @return {void}
+         * @private
+         */
+        function handleClick(e, d) {
+            toggleLine(d.id);
+
+            dispatcher.call('customClick', e, d, d3Selection.mouse(e));
+        }
+
+        /**
          * Draws the entries of the legend within a single line
          * @private
          */
@@ -446,7 +462,10 @@
 
             svg.select('.legend-group')
                 .selectAll('g.legend-entry')
-              .append('text')
+            .append('text')
+                .on('click', function(d) {
+                    handleClick(this, d);
+                })
                 .classed('legend-entry-name', true)
                 .text(getName)
                 .attr('x', getLineElementMargin())
@@ -500,6 +519,9 @@
                 .selectAll('g.legend-line')
                 .selectAll('g.legend-entry')
               .append('text')
+                .on('click', function(d) {
+                    handleClick(this, d);
+                })
                 .classed('legend-entry-name', true)
                 .text(getName)
                 .attr('x', getLineElementMargin())
@@ -541,6 +563,20 @@
 
             svg.select(`[data-item="${exceptionItemId}"]`)
                 .classed(isFadedClassName, false);
+        }
+
+        /**
+         * Applies the dim class the line that has the given id
+         * @param  {number} labelToDimId Id of the line that needs to stay the same
+         * @private
+         */
+        function toggleLine(labelToDimId) {
+            let classToFade = 'g.legend-entry';
+
+            let labelSVG = svg.select(`[data-item="${labelToDimId}"]`);
+
+            labelSVG.classed(isToggledClassName, 
+                labelSVG.classed(isToggledClassName) ? false : true);
         }
 
         /**
@@ -620,6 +656,16 @@
             cleanFadedLines();
             fadeLinesBut(entryId);
         };
+
+        /**
+         * Dims a line entry by fading the clicked label
+         * @param  {number} entryId ID of the entry line
+         * @public
+         */
+        exports.dimLabel = function(entryId) {
+            cleanFadedLines();
+            toggleLine(entryId);
+        }
 
         /**
          * Gets or Sets the horizontal mode on the legend
@@ -714,6 +760,20 @@
 
             return this;
         };
+
+        /**
+         * Exposes an 'on' method that acts as a bridge with the event dispatcher
+         * We are going to expose this events:
+         * customClick
+         *
+         * @return {module} Legend Chart
+         * @public
+         */
+        exports.on = function() {
+            let value = dispatcher.on.apply(dispatcher, arguments);
+            
+            return value === dispatcher ? exports : value;
+        }
 
         return exports;
     };

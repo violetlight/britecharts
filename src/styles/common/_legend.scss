@@ -30,10 +30,15 @@ $exit-opacity: .2;
             .legend-entry-name,
             .legend-entry-value,
             .legend-circle {
-                text-decoration: 'line-through';
-                transition: text-decoration .2s ease-out;
-                -moz-transition: text-decoration .2s ease-out;
-                -webkit-transition: text-decoration .2s ease-out;
+                opacity: $enter-opacity;
+                transition: opacity .2s ease-out;
+                -moz-transition: opacity .2s ease-out;
+                -webkit-transition: opacity .2s ease-out;
+            }
+            .legend-entry-name,
+            .legend-entry-value,
+            .legend-circle {
+                opacity: $exit-opacity;
             }
         }
     }
