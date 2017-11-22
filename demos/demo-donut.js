@@ -34,6 +34,8 @@ function createDonutChart(optionalColorSchema) {
             donutChart.exportChart();
         });
 
+        legendChart.on('customClick', donutChart.highlightSliceById);
+
         donutChart
             .isAnimated(true)
             .highlightSliceById(2)

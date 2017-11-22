@@ -222,17 +222,10 @@ define(function(require){
          * @return {void}
          * @private
          */
-        function handleClick(el, d, chartWidth, chartHeight) {
-            console.log('clicked')
-            dispatcher.call('customClick', el, d, d3Selection.mouse(el), [chartWidth, chartHeight]);
-
+        function handleClick(e, d) {
             toggleLine(d.id);
-            d3Selection.sele
-            // if (highlightedSlice && el !== highlightedSlice) {
-                // console.log('highlightedSlice crossed', );
-                // tweenGrowth(highlightedSlice, externalRadius - radiusHoverOffset);
-            // }
-            // tweenGrowth(el, externalRadius);
+
+            dispatcher.call('customClick', e, d, d3Selection.mouse(e));
         }
 
         /**
@@ -389,14 +382,10 @@ define(function(require){
         function toggleLine(labelToDimId) {
             let classToFade = 'g.legend-entry';
 
-            console.log('shouldDim this label', labelToDimId);
+            let labelSVG = svg.select(`[data-item="${labelToDimId}"]`);
 
-            // svg.select('.legend-group')
-            //     .selectAll(classToFade)
-            //     .classed(isFadedClassName, true);
-
-            svg.select(`[data-item="${labelToDimId}"]`)
-                .classed(isFadedClassName, true);
+            labelSVG.classed(isFadedClassName, 
+                labelSVG.classed(isFadedClassName)? false : true);
         }
 
         /**
@@ -581,6 +570,14 @@ define(function(require){
             return this;
         };
 
+        /**
+         * Exposes an 'on' method that acts as a bridge with the event dispatcher
+         * We are going to expose this events:
+         * customClick
+         *
+         * @return {module} Legend Chart
+         * @public
+         */
         exports.on = function() {
             let value = dispatcher.on.apply(dispatcher, arguments);
             
