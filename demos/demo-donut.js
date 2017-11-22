@@ -34,8 +34,6 @@ function createDonutChart(optionalColorSchema) {
             donutChart.exportChart();
         });
 
-        legendChart.on('customClick', donutChart.highlightSliceById);
-
         donutChart
             .isAnimated(true)
             .highlightSliceById(2)
@@ -58,6 +56,14 @@ function createDonutChart(optionalColorSchema) {
 
         d3Selection.select('#button').on('click', function() {
             donutChart.exportChart('donut.png', 'Britecharts Donut Chart');
+        });
+
+        let filteredData;
+        legendChart.on('customClick', function(d) {
+            filteredData = filteredData ? filteredData : dataset;
+            filteredData = filteredData.filter(dataPoint => dataPoint.id !== d.id);
+
+            donutContainer.datum(filteredData).call(donutChart);
         });
     }
 }

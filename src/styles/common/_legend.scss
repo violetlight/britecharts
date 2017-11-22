@@ -25,5 +25,16 @@ $exit-opacity: .2;
                 opacity: $exit-opacity;
             }
         }
+
+        &.is-toggled {
+            .legend-entry-name,
+            .legend-entry-value,
+            .legend-circle {
+                text-decoration: 'line-through';
+                transition: text-decoration .2s ease-out;
+                -moz-transition: text-decoration .2s ease-out;
+                -webkit-transition: text-decoration .2s ease-out;
+            }
+        }
     }
 }

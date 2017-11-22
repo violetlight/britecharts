@@ -86,6 +86,7 @@ define(function(require){
             numberFormat = 's',
 
             isFadedClassName = 'is-faded',
+            isToggledClassName = 'is-faded',
             isHorizontal = false,
 
             // colors
@@ -384,8 +385,8 @@ define(function(require){
 
             let labelSVG = svg.select(`[data-item="${labelToDimId}"]`);
 
-            labelSVG.classed(isFadedClassName, 
-                labelSVG.classed(isFadedClassName)? false : true);
+            labelSVG.classed(isToggledClassName, 
+                labelSVG.classed(isToggledClassName) ? false : true);
         }
 
         /**
